@@ -35,8 +35,6 @@ void insertResult(tresp** presp , int n) {
 
         p->prox = aux;
     }
-    
-  
 }
 
 void imprime(tresp* presp) {
