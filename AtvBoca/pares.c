@@ -79,6 +79,7 @@ int main() {
     preorder(tree->esq);
     printf("\n");
     preorder(tree->dir);
+    printf("\n");
     
     return 0;
 }

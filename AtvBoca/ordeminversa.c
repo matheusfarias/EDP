@@ -55,11 +55,8 @@ int main() {
         insertTree(&tree, n);
     }
 
-    printf("\n");
 
     inorder(tree);
-
-    printf("\n");
     
     return 0;
 }

@@ -39,7 +39,7 @@ void insertTree(tnode** pnode, int n) {
 
 void preorder(tnode* pnode) {
 	if(pnode != NULL) {
-		printf("%d\n", pnode->reg.id);
+		printf("%d ", pnode->reg.id);
 		preorder(pnode->dir);
         preorder(pnode->esq);
 
