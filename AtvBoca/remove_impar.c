@@ -60,7 +60,7 @@ tnode** busca(tnode** pnode, int n) {
 	return ret;
 }
 
-
+/*
 tnode** sucessor(tnode** pnode) {
 	tnode** aux;
 	aux = &((*pnode)->dir);
@@ -70,6 +70,24 @@ tnode** sucessor(tnode** pnode) {
 
 }
 
+*/
+
+
+tnode** sucessor(tnode** pnode) {
+	tnode *aux;
+	tnode **paux;
+
+	aux = (*pnode)->dir;
+	paux = &(*pnode)->dir;
+	while(aux->esq !=NULL) {
+		paux = &(aux->esq);
+		aux = aux->esq;
+	}
+
+	return paux;
+
+	
+}
 
 
 void remove_raiz(tnode** pnode) {
@@ -80,11 +98,11 @@ void remove_raiz(tnode** pnode) {
 		aux = *pnode;
 		(*pnode) = NULL;
 		free(aux);
-	}else if((*pnode)->esq == NULL && (*pnode)->dir != NULL) {
+	}else if((*pnode)->esq != NULL && (*pnode)->dir == NULL) {
 		aux = *pnode;
 		(*pnode) = (*pnode)->dir;
 		free(aux);
-	}else if((*pnode)->esq != NULL && (*pnode)->dir != NULL) {
+	}else if((*pnode)->esq == NULL && (*pnode)->dir != NULL) {
 		aux = *pnode;
 		(*pnode) = (*pnode)->esq;
 		free(aux);
@@ -97,29 +115,58 @@ void remove_raiz(tnode** pnode) {
 
 
 
+void desenha_arv(tnode *pnode,int prof){
+    int i;
+    if (pnode != NULL){
+        desenha_arv(pnode->esq,prof+1);
+        for (i=0;i<prof;i++)
+            printf("     ");
+        printf("%d\n",pnode->reg.id);
+        desenha_arv(pnode->dir,prof+1);
+    }
+}
+
+/*
+void in_order(tnode *pnode){
+    if (pnode != NULL){
+        in_order(pnode->esq);
+        printf("%d ",pnode->reg.id);
+        in_order(pnode->dir);
+    }
+}
+
+
+
+
+*/
+
 
 int remover(tnode** pnode, int n) {
 	int ret = 0;
 	tnode** aux;
 	aux = NULL;
 	aux = busca(pnode, n);
-	remove_raiz(aux);
-	if(aux != NULL)
+	if(aux != NULL) {
+		remove_raiz(aux);
 		ret = 1;
+	}
 	return ret;
 }
 
 
 
 
+void remove_so_impar(tnode* pnode) {
 
-
-
-
-
-
-
-
+	if (pnode != NULL){
+        remove_so_impar(pnode->esq);
+        if(pnode->reg.id % 2 != 0) {
+        	printf("removendo %d\n", pnode->reg.id);
+        	remover(&pnode, pnode->reg.id);
+        }
+        remove_so_impar(pnode->dir);
+    }
+}
 
 
 int main() {
@@ -127,8 +174,7 @@ int main() {
 
 	tnode* tree = NULL;
     int n, x, i;
-    
-
+    tnode** paux = NULL;
 
 
     
@@ -139,24 +185,20 @@ int main() {
     }
 
 
+   remove_so_impar(tree);
+
+   printf("\n");
 
 
-    
-    tnode** search = NULL;
+   preorder(tree);
 
-    search = busca(&tree, 12);
+   printf("\n");
 
-    if(search != NULL)
-    	printf("achou: %d\n", (*search)->reg.id);
-    else
-    	printf("NAO ENCONTRADO\n");
-   	
-
-
-
-
-    
-
+    /*
+    #ifdef	DEBUG
+    freopen("remove.in", "r", stdin);
+    #endif
+	*/
 
     //printf("OK\n");
 
