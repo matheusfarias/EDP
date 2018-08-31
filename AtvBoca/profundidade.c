@@ -26,7 +26,7 @@ void insertResult(tresp** presp , int n) {
     aux->id = n;
     aux->prox = NULL;
 
-    if(*presp == NULL)
+    if(*presp == NULL)  
         *presp = aux;
     else {
         tresp* p = *presp;
