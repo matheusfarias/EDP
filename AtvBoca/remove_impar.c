@@ -5,6 +5,30 @@ typedef struct regis {
     int id;
 }treg;
 
+
+typedef struct prim {
+	int x;
+	struct prim* prox;
+}tprim;
+
+
+void adicionaPrimo(tprim** primo, int n) {
+	tprim* aux;
+
+	aux = (tprim*) malloc(sizeof(tprim));
+	aux->x = n;
+	aux->prox = NULL;
+
+	if(*primo)
+		*primo = aux;
+	else {
+		tprim* p = *primo;
+		while(p->prox != NULL)
+			p = p->prox;
+		p->prox = aux;
+	}
+}
+
 typedef struct node {
     treg reg;
     struct node* esq;
@@ -156,16 +180,29 @@ int remover(tnode** pnode, int n) {
 
 
 
-void remove_so_impar(tnode* pnode) {
+void busca_impar(tnode* pnode, tprim** primo) {
 
-	if (pnode != NULL){
-        remove_so_impar(pnode->esq);
-        if(pnode->reg.id % 2 != 0) {
-        	printf("removendo %d\n", pnode->reg.id);
-        	remover(&pnode, pnode->reg.id);
-        }
-        remove_so_impar(pnode->dir);
-    }
+	if(pnode != NULL) {
+		//printf("%d ", pnode->reg.id);
+		if(pnode->reg.id % 2 != 0) {
+			adicionaPrimo(primo, pnode->reg.id);
+			printf("adicionando: %d\n", pnode->reg.id);
+		}
+		preorder(pnode->esq);
+		preorder(pnode->dir);
+	}
+}
+
+void remove_so_impar(tnode** pnode, tprim* primo) {
+
+	tprim* aux = primo;
+
+	while(aux != NULL) {
+		printf("removendo: %d\n", aux->x);
+		remover(pnode, aux->x);
+		aux = aux->prox;	
+	}
+
 }
 
 
@@ -177,7 +214,8 @@ int main() {
     tnode** paux = NULL;
 
 
-    
+    tprim* primos = NULL;
+
     scanf("%d", &x);
     for(i = 0; i < x; i++) {
         scanf("%d", &n);
@@ -185,7 +223,6 @@ int main() {
     }
 
 
-   remove_so_impar(tree);
 
    printf("\n");
 
@@ -193,6 +230,18 @@ int main() {
    preorder(tree);
 
    printf("\n");
+
+
+
+   busca_impar(tree, &primos);
+
+
+   //remove_so_impar(&tree, primos);
+
+
+   preorder(tree);
+
+
 
     /*
     #ifdef	DEBUG
