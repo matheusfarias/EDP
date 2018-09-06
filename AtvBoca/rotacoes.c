@@ -18,28 +18,6 @@ typedef struct cel_resp {
     struct cel_resp* prox;
 }tresp;
 
-
-
-void insertResult(tresp** presp , int n) {
-
-    tresp* aux;
-    aux = (tresp*) malloc(sizeof(tresp));
-    aux->id = n;
-    aux->prox = NULL;
-
-    if(*presp == NULL)  
-        *presp = aux;
-    else {
-        tresp* p = *presp;
-        while(p->prox != NULL)
-            p = p->prox;
-
-        p->prox = aux;
-    }
-}
-
-
-
 tnode* alocaNode (int id) {
     tnode* aux;
     aux = (tnode*) malloc(sizeof(tnode));
@@ -130,7 +108,23 @@ void remove_raiz(tnode** pnode) {
 	}
 }
 
+void rd (tnode** pnode) {
+    tnode* x = *pnode;
+    tnode* y = x->esq;
+    tnode* b = y->dir;
+    x->esq = b;
+    y->dir = x;
+    *pnode = y;
+}
 
+void re(tnode** pnode) {
+    tnode* x = *pnode;
+    tnode* y = x->dir;
+    tnode* b = y->esq;
+    x->dir = b;
+    y->esq = x;
+    *pnode = y;
+}
 
 void desenha_arv(tnode *pnode,int prof){
     int i;
@@ -148,73 +142,44 @@ int remover(tnode** pnode, int n) {
 	int ret = 0;
 	tnode** aux;
 	aux = NULL;
-	aux = busca(pnode, n);
+	aux = busca(pnode, n);  
 	if(aux != NULL) {
 		remove_raiz(aux);
 		ret = 1;
 	}
 	return ret;
 }
-
-
-
-
-void busca_impar(tnode* pnode, tresp** presp) {
-
-	if(pnode != NULL) {
-		if(pnode->reg.id % 2 != 0) {
-			insertResult(presp, pnode->reg.id);
-		}
-		busca_impar(pnode->esq, presp);
-		busca_impar(pnode->dir, presp);
-	}
-}
-
-void remove_so_impar(tnode** pnode, tresp* presp) {
-
-	tresp* aux = presp;
-
-	while(aux != NULL) {
-		printf("removendos %d\n", aux->id);
-		remover(pnode, aux->id);
-		aux = aux->prox;	
-	}
-
-}
-
-
-
-void imprime(tresp* presp) {
-    tresp* p;
-
-    for(p = presp; p!= NULL; p = p->prox)
-        printf("%d\n", p->id);
-
-}
+// scanf(" %[^\n]s")
 
 int main() {
 
-
-	tnode* tree = NULL;
-    int n, x, i;
-
-
-    tresp* resposta = NULL;
-
+    tnode* tree = NULL;
+    tnode ** aux;
+	int x, i;
     scanf("%d", &x);
-    for(i = 0; i < x; i++) {
-        scanf("%d", &n);
-        insertTree(&tree, n);
-    }
-
-   busca_impar(tree, &resposta);
-
-
-   remove_so_impar(&tree, resposta);
-
-
-   preorder(tree);
-
+    for (i = 0; i < x; i++) {
+        char op;
+        int y = 0, j, n, m;
+        scanf("%d" , &y);
+        for(j = 0; j < y; j++) {
+            scanf("%d", &n);
+            insertTree(&tree, n);
+        }
+        scanf("%c %d", &op, &m);
+        preorder(tree);
+        printf("\n");
+        aux = busca(&tree, m);
+        if(op == 'D') {
+            //rd(aux);
+            printf("aqu");
+        }else {
+            printf("esl");
+            re(aux);
+        }
+            
+        preorder(*aux);
+        printf("\n");
+    }   
     return 0;
 
 }
