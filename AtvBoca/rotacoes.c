@@ -158,6 +158,7 @@ int main() {
 	int x, i;
     scanf("%d", &x);
     for (i = 0; i < x; i++) {
+        tree = NULL;
         char op;
         int y = 0, j, n, m;
         scanf("%d" , &y);
@@ -165,20 +166,20 @@ int main() {
             scanf("%d", &n);
             insertTree(&tree, n);
         }
-        scanf("%c %d", &op, &m);
+        scanf(" %c", &op);
+        scanf("%d", &m);
         preorder(tree);
         printf("\n");
         aux = busca(&tree, m);
-        if(op == 'D') {
-            //rd(aux);
-            printf("aqu");
-        }else {
-            printf("esl");
+        if(op == 'D')
+            rd(aux);
+        if(op == 'E')
             re(aux);
-        }
             
-        preorder(*aux);
+        preorder(tree);
         printf("\n");
+
+        //desenha_arv(tree, 0);
     }   
     return 0;
 
