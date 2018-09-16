@@ -70,7 +70,7 @@ void RD(tnode ** pnode){
 void rebalancear(tnode** pnode) {
     int fb;                             //fator balanceamento
     int fbf;                            // fator de balanceamento filho
-    //pnode* fma;                         //filho mais alto
+    
 
     tnode* filho;
     tnode* pai;
@@ -90,9 +90,9 @@ void rebalancear(tnode** pnode) {
         filho = pai->dir;
         fbf = altura(filho->esq) - altura(filho->dir);
         if(fbf == 1) {
-            RE(&(pai->dir));
+            RD(&(pai->dir));
         }
-        RD(pnode);
+        RE(pnode);
     }
 
 }
@@ -173,8 +173,8 @@ void preorder(tnode* pnode) {
 */
 void par_preorder(tnode* pnode) {
     if(pnode != NULL) {
-        printf("(%d,%d) ", pnode->reg, pnode->h);
         par_preorder(pnode->esq);
+        printf("(%d,%d) ", pnode->reg, pnode->h);
         par_preorder(pnode->dir);
     }
 }
@@ -196,7 +196,7 @@ int main(void){
         scanf("%d", &num);
         insere(&arv, num);
     }  
-    par_preorder(arv);
+   par_preorder(arv);
 
 
 
