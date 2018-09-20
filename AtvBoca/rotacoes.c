@@ -149,7 +149,6 @@ int remover(tnode** pnode, int n) {
 	}
 	return ret;
 }
-// scanf(" %[^\n]s")
 
 int main() {
 
@@ -179,7 +178,7 @@ int main() {
         preorder(tree);
         printf("\n");
 
-        //desenha_arv(tree, 0);
+
     }   
     return 0;
 
