@@ -1,4 +1,4 @@
-  #include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct regis {
@@ -81,7 +81,7 @@ tnode** sucessor(tnode** pnode) {
 
 	return paux;
 
-	
+
 }
 
 
@@ -142,7 +142,7 @@ int remover(tnode** pnode, int n) {
 	int ret = 0;
 	tnode** aux;
 	aux = NULL;
-	aux = busca(pnode, n);  
+	aux = busca(pnode, n);
 	if(aux != NULL) {
 		remove_raiz(aux);
 		ret = 1;
@@ -175,13 +175,12 @@ int main() {
             rd(aux);
         if(op == 'E')
             re(aux);
-            
+
         preorder(tree);
         printf("\n");
 
         //desenha_arv(tree, 0);
-    }   
+    }
     return 0;
 
 }
-
