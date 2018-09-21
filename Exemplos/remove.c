@@ -142,22 +142,19 @@ void pre_ordem(tnode *pnode){
     }
 }
 
-int remove_node(tnode** pnode, int reg){
+tnode ** busca_pont(tnode ** pnode, int reg){
     tnode ** ret;
     if (*pnode == NULL){
         ret = NULL;
-    }else {
-        if ((*pnode)->reg > reg){
+    }else if ((*pnode)->reg == reg){
+        ret = pnode;
+    }else{
+        if (reg > (*pnode)->reg){
             ret = busca_pont(&(*pnode)->dir,reg);
-        else if((*pnode)->reg > reg)
-        }else if(){
-            if (reg > (*pnode)->reg){
-
-            }else{
-                ret = busca_pont(&(*pnode)->esq,reg);
-            }
-
+        }else{
+            ret = busca_pont(&(*pnode)->esq,reg);
         }
+
     }
     return ret;
 }

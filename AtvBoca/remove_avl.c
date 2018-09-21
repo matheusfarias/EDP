@@ -224,10 +224,12 @@ int fator_balanceamento(tnode* pnode) {
 
 
 void delete_node(tnode** pnode, int n) {
+    
     tnode** aux = busca_pont(pnode, n);
     if(aux == NULL)
         printf("nao encontrado\n");
     else {
+        ret = 1;
         tnode* auxiliar;
  	    tnode** paux;
 
@@ -244,10 +246,8 @@ void delete_node(tnode** pnode, int n) {
  		        (*aux) = (*aux)->esq;
  		        free(auxiliar);
  	    }else {
-                int temp = menor_valor(*aux);
- 		        //paux = sucessor(pnode);
- 		        //(*pnode)->reg = (*paux)->reg;
-                (*aux)->reg = temp;
+ 		        paux = sucessor(pnode);
+ 		        (*pnode)->reg = (*paux)->reg
  		        delete_node(&(*aux)->dir, temp);
  	    }
     }

@@ -126,13 +126,6 @@ void imprime_arv(tnode * pnode,int p){
     }
 }
 
-void destroi_arv(tnode * pnode){
-    if (pnode != NULL){
-        destroi_arv(pnode->esq);
-        destroi_arv(pnode->dir);
-        free(pnode);
-    }
-}
 
 void pre_ordem(tnode *pnode){
     if (pnode != NULL){
@@ -142,38 +135,23 @@ void pre_ordem(tnode *pnode){
     }
 }
 
-int remove_node(tnode** pnode, int reg){
+tnode ** busca_pont(tnode ** pnode, int reg){
     tnode ** ret;
     if (*pnode == NULL){
         ret = NULL;
-    }else {
-        if ((*pnode)->reg > reg){
+    }else if ((*pnode)->reg == reg){
+        ret = pnode;
+    }else{
+        if (reg > (*pnode)->reg){
             ret = busca_pont(&(*pnode)->dir,reg);
-        else if((*pnode)->reg > reg)
-        }else if(){
-            if (reg > (*pnode)->reg){
-
-            }else{
-                ret = busca_pont(&(*pnode)->esq,reg);
-            }
-
+        }else{
+            ret = busca_pont(&(*pnode)->esq,reg);
         }
+
     }
     return ret;
 }
 
-/*
-
-void preorder(tnode* pnode) {
-    if(pnode != NULL)  {
-        printf("%d ",pnode->reg.id);
-        preorder(pnode->esq);
-        preorder(pnode->dir);
-    }
-}
-
-
-*/
 void par_preorder(tnode* pnode) {
     if(pnode != NULL) {
         par_preorder(pnode->esq);
@@ -182,6 +160,37 @@ void par_preorder(tnode* pnode) {
     }
 }
 
+
+
+void delete_node(tnode** pnode, int n) {
+    tnode** aux = busca_pont(pnode, n);
+    if(aux == NULL)
+        printf("nao encontrado\n");
+    else {
+        tnode* auxiliar;
+ 	    tnode** paux;
+
+ 	    if((*aux)->esq == NULL && (*aux)->dir == NULL) {
+ 		        auxiliar = *aux;
+                (*aux) = NULL;
+                free(auxiliar);
+        }else if((*aux)->esq != NULL && (*aux)->dir == NULL) {
+                auxiliar = *aux;
+                (*aux) = (*aux)->dir;
+                free(auxiliar);
+        }else if((*aux)->esq == NULL && (*aux)->dir != NULL) {
+ 		        auxiliar = *aux;
+ 		        (*aux) = (*aux)->esq;
+ 		        free(auxiliar);
+ 	    }else {
+                int temp = menor_valor(*aux);
+ 		        //paux = sucessor(pnode);
+ 		        //(*pnode)->reg = (*paux)->reg;
+                (*aux)->reg = temp;
+ 		        delete_node(&(*aux)->dir, temp);
+ 	    }
+    }
+}
 
 
 
