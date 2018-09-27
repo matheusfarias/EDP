@@ -1,4 +1,4 @@
- #include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct regis {
@@ -27,7 +27,7 @@ void insertResult(tresp** presp , int n) {
     aux->id = n;
     aux->prox = NULL;
 
-    if(*presp == NULL)  
+    if(*presp == NULL)
         *presp = aux;
     else {
         tresp* p = *presp;
@@ -103,7 +103,7 @@ tnode** sucessor(tnode** pnode) {
 
 	return paux;
 
-	
+
 }
 
 
@@ -177,7 +177,7 @@ void remove_so_impar(tnode** pnode, tresp* presp) {
 	while(aux != NULL) {
 		printf("removendos %d\n", aux->id);
 		remover(pnode, aux->id);
-		aux = aux->prox;	
+		aux = aux->prox;
 	}
 
 }
@@ -218,4 +218,3 @@ int main() {
     return 0;
 
 }
-
