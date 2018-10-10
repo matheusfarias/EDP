@@ -1,286 +1,297 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct reg{
-    int valor;
-} treg;
-
 typedef struct _node{
-    treg reg;
-    int altura;
-    struct _node *esq;
-    struct _node *dir;
-} tnode;
+    int reg;
+    int h;
+    struct _node * esq;
+    struct _node * dir;
+}tnode;
 
-tnode *cria_arvore(int num){
 
-    tnode *arvore = (tnode *)malloc(sizeof(tnode));
-    arvore->reg.valor = num;
-    arvore->altura = 0;
-    arvore->esq = NULL;
-    arvore->dir = NULL;
+tnode* aloca_node(int n) {
+    tnode* aux = (tnode* )malloc(sizeof(tnode));
+    aux->reg = n;
+    aux->h;
+    aux->esq = NULL;
+    aux->dir = NULL;
 
-    return arvore;
+    return aux;
 }
 
-int altura_no(tnode *no){ //calcula a altura do no
-    if (no == NULL){
-        return -1;
-    }
-    else{
-        return no->altura;
-    }
+
+int altura(tnode* pnode) {
+    int ret;
+    if(pnode == NULL)
+        ret = -1;
+    else
+        ret = pnode->h;
+    return ret;
 }
 
-int max(int a, int b){
-    return (a > b) ? a : b;
+
+int max(int a, int b) {
+    return (a > b)?a:b;
 }
 
-void rotacao_esq(tnode **tree){
-    tnode *x;
-    tnode *y;
-    tnode *a;
-    tnode *b;
-    x = *tree;
+void RE(tnode ** pnode){
+    tnode * x;
+    tnode * y;
+    tnode * a;
+    tnode * b;
+    x = *pnode;
     y = x->dir;
     a = x->esq;
     b = y->esq;
-
-    printf("RE %d\n", (*tree)->reg.valor);
+    printf("RE %d\n", x->reg);
 
     x->esq = a;
     x->dir = b;
     y->esq = x;
-    *tree = y;
+    *pnode = y;
 
-    x->altura = max(altura_no(x->esq), altura_no(x->dir)) + 1;
-    y->altura = max(altura_no(y->esq), altura_no(y->dir)) + 1;
+    x->h = max(altura(x->esq), altura(x->dir)) + 1;
+    y->h = max(altura(y->esq), altura(y->dir)) + 1;
+
 }
 
-void rotacao_dir(tnode **tree){
-    tnode *x;
-    tnode *y;
-    tnode *a;
-    tnode *b;
-    y = *tree;
+void RD(tnode ** pnode){
+    tnode * x;
+    tnode * y;
+    tnode * a;
+    tnode * b;
+    y = *pnode;
     x = y->esq;
     a = x->esq;
     b = x->dir;
-
-    printf("RD %d\n", (*tree)->reg.valor);
+    printf("RD %d\n", y->reg);
 
     x->esq = a;
     x->dir = y;
     y->esq = b;
-    *tree = x;
+    *pnode = x;
 
-    y->altura = max(altura_no(y->esq), altura_no(y->dir)) + 1;
-    x->altura = max(altura_no(x->esq), altura_no(x->dir)) + 1;
+    y->h = max(altura(y->esq), altura(y->dir)) + 1;
+    x->h = max(altura(x->esq), altura(x->dir)) + 1;
+
 }
 
-void rebalancear(tnode **tree){
-    int fator_balanco, fator_balanco_filho;
-    tnode *filho;
-    tnode *pai;
 
-    pai = *tree;
-    fator_balanco = altura_no(pai->esq) - altura_no(pai->dir);
 
-    if (fator_balanco == 2){
+void rebalancear(tnode** pnode) {
+    int fb;                             //fator balanceamento
+    int fbf;                            // fator de balanceamento filho
+
+    tnode* filho;
+    tnode* pai;
+    pai = *pnode;
+
+    fb = altura(pai->esq) - altura(pai->dir);
+
+    if(fb == 2) {
         filho = pai->esq;
-        fator_balanco_filho = altura_no(filho->esq) - altura_no(filho->dir);
-        if (fator_balanco_filho == -1){
-            rotacao_esq(&(pai->esq));
+        fbf = altura(filho->esq) - altura(filho->dir);
+        if(fbf == -1) {
+            RE(&(pai->esq));
         }
-        rotacao_dir(tree);
-    }
+        RD(pnode);
 
-    else if (fator_balanco == -2){
+    }else if(fb == -2) {
         filho = pai->dir;
-        fator_balanco_filho = altura_no(filho->esq) - altura_no(filho->dir);
-        if (fator_balanco_filho == 1){
-            rotacao_dir(&(pai->dir));
+        fbf = altura(filho->esq) - altura(filho->dir);
+        if(fbf == 1) {
+            RD(&(pai->dir));
         }
-        rotacao_esq(tree);
+        RE(pnode);
+    }
+
+}
+
+void insere(tnode** pnode, int n) {
+    if(*pnode == NULL)
+        *pnode = aloca_node(n);
+    else {
+        if((*pnode)->reg < n) {
+            insere(&(*pnode)->dir, n);
+        }else {
+            insere(&(*pnode)->esq, n);
+        }
+        (*pnode)->h = max(altura((*pnode)->esq), altura((*pnode)->dir)) + 1;
+        rebalancear(pnode);
     }
 }
 
-tnode **sucessor(tnode **tree){
-    tnode *aux;
-    tnode **paux;
-    aux = (*tree)->dir;
-    paux = &(*tree)->dir;
-    while (aux->esq != NULL){
-        paux = &(aux->esq);
-        aux = aux->esq;
-    }
-    return paux;
-}
 
-int remove_avl(tnode **tree, int num){
-
-    int aux, fator_balanceamento;
-    tnode **capivara;
-    tnode *paux;
-    tnode *pai;
-    pai = *tree;
-
-    fator_balanceamento = altura_no(pai->esq) - altura_no(pai->dir);
-    if(*tree == NULL){
-        printf("Arvore vazia\n");
-        return 0;
-    }
-    if(num < (*tree)->reg.valor){
-        if((aux = remove_avl(&(*tree)->esq, num)) == 1){
-            if(fator_balanceamento >= 2){
-                if(altura_no((*tree)->dir->esq) <= altura_no((*tree)->dir->dir)){
-                    rotacao_dir(tree);
-                }else{
-                    rotacao_esq(tree);
-                }
-            }
+/*
+void insere(tnode** parv,int num){
+    if (*parv == NULL){
+        *parv = (tnode *) malloc(sizeof(tnode));
+        (*parv)->reg = num;
+        (*parv)->esq = NULL;
+        (*parv)->dir = NULL;
+        (*parv)->h = 0;
+    }else{
+        if (num > (*parv)->reg){
+            insere(&(*parv)->dir,num);
+        }else{
+            insere(&(*parv)->esq,num);
         }
-    }
-    if(num > (*tree)->reg.valor){
-        if((aux = remove_avl(&(*tree)->dir, num)) == 1){
-            if(fator_balanceamento >= -2){
-                if(altura_no((*tree)->esq->dir) <= altura_no((*tree)->esq->esq)){
-                    rotacao_esq(tree);
-                }else{
-                    rotacao_dir(tree);
-                }
-            }
-        }
-    }
-    if(num == (*tree)->reg.valor){
-        if(((*tree)->esq == NULL || (*tree)->dir == NULL)){
-            paux = (*tree);
-
-            if((*tree)->esq != NULL){
-                *tree = (*tree)->esq;
-            }else{
-                *tree = (*tree)->dir;
-            }
-            free(paux);
-        }else{//no tem 2 filhos
-            capivara = sucessor(&(*tree)->dir);
-            (*tree)->reg.valor = (*capivara)->reg.valor;
-            remove_avl(&(*tree)->dir, (*tree)->reg.valor);
-            if(fator_balanceamento >= 2){
-                if(altura_no((*tree)->esq->dir) <= altura_no((*tree)->esq->esq)){
-                    rotacao_esq(tree);
-                }else{
-                    rotacao_dir(tree);
-                }
-            }
-        }
-        return 1;
-    }
-    return aux;
-}
-
-void pre_order(tnode *tree){
-    if (tree != NULL){
-        printf("%d ", tree->reg.valor);
-        pre_order(tree->esq);
-        pre_order(tree->dir);
+        (*parv)->h = max(altura((*parv)->esq), altura((*parv)->dir)) + 1;
+        rebalancear(parv);
     }
 }
-
-void in_order(tnode *tree){
-    if (tree != NULL){
-        in_order(tree->esq);
-        printf("(%d,%d) ", tree->reg.valor, tree->altura);
-        in_order(tree->dir);
-    }
-}
-
-void pos_order(tnode *tree){
-    if (tree != NULL){
-        pos_order(tree->esq);
-        pos_order(tree->dir);
-        printf("%d", tree->reg.valor);
-    }
-}
-
-void insere_avl(tnode **tree, int num){
-    if (*tree == NULL){
-        *tree = cria_arvore(num);
-    }
-    else{
-        if ((*tree)->reg.valor < num){
-            insere_avl(&(*tree)->dir, num);
-        }
-        else{
-            insere_avl(&(*tree)->esq, num);
-        }
-        (*tree)->altura = max(altura_no((*tree)->esq), altura_no((*tree)->dir)) + 1;
-        rebalancear(tree);
-    }
-}
-
-tnode **busca(tnode **tree, int num){
-
-    tnode **aux;
-    if (*tree == NULL){
-        aux = NULL;
-    }
-    else if ((*tree)->reg.valor == num){
-        aux = tree;
-    }
-    else{
-        if ((*tree)->reg.valor < num){
-            aux = busca(&((*tree)->dir), num);
-        }
-        else{
-            aux = busca(&((*tree)->esq), num);
-        }
-    }
-}
-
-void imprime_arvore(tnode *tree, int p){
+*/
+void imprime_arv(tnode * pnode,int p){
     int i;
-
-    if (tree != NULL){
-        imprime_arvore(tree->esq, p + 1);
-        for (i = 0; i < p; i++){
+    if (pnode != NULL){
+        imprime_arv(pnode->esq,p+1);
+        for (i=0;i<p;i++)
             printf("   ");
-        }
-        printf("%d\n", tree->reg.valor);
-        imprime_arvore(tree->dir, p + 1);
+        printf("%d\n",pnode->reg);
+        imprime_arv(pnode->dir,p+1);
     }
 }
 
-int main(){
+void destroi_arv(tnode * pnode){
+    if (pnode != NULL){
+        destroi_arv(pnode->esq);
+        destroi_arv(pnode->dir);
+        free(pnode);
+    }
+}
 
-    tnode *arvore = NULL;
-    int t, n, i, j, a, x;
+void pre_ordem(tnode *pnode){
+    if (pnode != NULL){
+        printf("%d ",pnode->reg);
+        pre_ordem(pnode->esq);
+        pre_ordem(pnode->dir);
+    }
+}
 
-    scanf("%d", &t);
-    for (i = 0; i < t; i++){
-        scanf("%d", &n);
-        insere_avl(&arvore, n);
+tnode ** busca_pont(tnode ** pnode, int reg){
+    tnode ** ret;
+    if (*pnode == NULL){
+        ret = NULL;
+    }else if ((*pnode)->reg == reg){
+        ret = pnode;
+    }else{
+        if (reg > (*pnode)->reg){
+            ret = busca_pont(&(*pnode)->dir,reg);
+        }else{
+            ret = busca_pont(&(*pnode)->esq,reg);
+        }
+
+    }
+    return ret;
+}
+
+
+
+void preorder(tnode* pnode) {
+    if(pnode != NULL)  {
+        printf("%d ",pnode->reg);
+        preorder(pnode->esq);
+        preorder(pnode->dir);
+    }
+}
+
+
+
+int menor_valor(tnode* pnode) {
+    tnode* aux;
+    aux = pnode;
+
+    while (aux->esq != NULL)
+        aux = aux->esq;
+
+    return aux->reg;
+}
+
+
+void par_preorder(tnode* pnode) {
+    if(pnode != NULL) {
+        par_preorder(pnode->esq);
+        printf("(%d,%d) ", pnode->reg, pnode->h);
+        par_preorder(pnode->dir);
+    }
+}
+
+int fator_balanceamento(tnode* pnode) {
+	if(pnode == NULL)
+		return 0;
+	return altura(pnode->esq) - altura(pnode->dir);
+}
+
+
+void delete_node(tnode** pnode, int n) {
+    
+    tnode** aux = busca_pont(pnode, n);
+    if(aux == NULL)
+        printf("nao encontrado\n");
+    else {
+        ret = 1;
+        tnode* auxiliar;
+ 	    tnode** paux;
+
+ 	    if((*aux)->esq == NULL && (*aux)->dir == NULL) {
+ 		        auxiliar = *aux;
+                (*aux) = NULL;
+                free(auxiliar);
+        }else if((*aux)->esq != NULL && (*aux)->dir == NULL) {
+                auxiliar = *aux;
+                (*aux) = (*aux)->dir;
+                free(auxiliar);
+        }else if((*aux)->esq == NULL && (*aux)->dir != NULL) {
+ 		        auxiliar = *aux;
+ 		        (*aux) = (*aux)->esq;
+ 		        free(auxiliar);
+ 	    }else {
+ 		        paux = sucessor(pnode);
+ 		        (*pnode)->reg = (*paux)->reg
+ 		        delete_node(&(*aux)->dir, temp);
+ 	    }
     }
 
-    pre_order(arvore);
+        if(aux == NULL) {
+            printf("return root\n");
+        }
 
-    //remove_avl(&arvore, 10);
 
-	
-	
+        (*aux)->h = max(altura((*aux)->esq), altura((*aux)->dir));
+
+        int balanceamento = fator_balanceamento(*aux);
+
+        if(balanceamento > 1 && fator_balanceamento((*aux)->esq) >= 0)
+            RD(aux);
+        else if(balanceamento > 1 && fator_balanceamento((*aux)->esq) < 0) {
+            RE(&(*aux)->esq);
+            RD(aux);
+        }
+        else if(balanceamento < -1 && fator_balanceamento((*aux)->dir) <= 0)
+            RE(aux);
+        else if(balanceamento < -1 && fator_balanceamento((*aux)->dir) > 0) {
+            RD(&(*aux)->dir);
+            RE(aux);
+        }
+}
+
+
+int main(void){
+    int i, j, n;
+    tnode* tree = NULL;
+
+    scanf("%d", &j);
+    for (i = 0; i < j; i++) {
+        scanf("%d", &n);
+        insere(&tree, n);
+    }
+
+    preorder(tree);
     printf("\n");
-	
-	imprime_arvore(arvore, 0);
-	
-	printf("\n");
+    delete_node(&tree, 100);
+    //printf("biscoito\n");
+    preorder(tree);
 
-    // for(j = 0; j < a; j++){
-    //     scanf("%d", &x);
-    //     remove_avl(&arvore, x);
-    // }
-    //imprime_arvore(arvore, 0);
-    //in_order(arvore);
-    pre_order(arvore);
-
+   //par_preorder(arv);
     return 0;
 }

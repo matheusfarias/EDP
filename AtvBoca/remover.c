@@ -232,7 +232,6 @@ int main() {
         insere(&tree, n);
     }
     in_order(tree);
-    printf("\n");
     for(i = 0; i < qtd_remover; i++) {
         scanf("%d", &n);
         existe = remove_node(&tree, n);
@@ -244,6 +243,7 @@ int main() {
             in_order(tree);
             printf("\n");
             pos_order(tree);
+            printf("\n");
             printf("\n");
         }
     }
