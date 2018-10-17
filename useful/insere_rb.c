@@ -84,7 +84,7 @@ rb_insert(tnode** pnode, int n) {
     tnode* z;
     z = build_node(n);
     y = NULL;
-    y = *pnode;
+    x = *pnode;
     while(x != NULL) {
         y = x;
         if(n < x->reg.key)
