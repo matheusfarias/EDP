@@ -124,7 +124,7 @@ void new_fix_up(tarv* arv, tnode* z) {
                 rotate_right(arv, z);
             }
             z->p->color = BLACK;
-            z->p->p->color = BLACK;
+            z->p->p->color = RED;
             rotate_left(arv, z->p->p);
         }
     }
@@ -261,7 +261,7 @@ int main() {
         scanf("%d", &n);
         insere_rb(arv, n);
         //in_order(arv, arv->root);
-        //desenha(arv, arv->root, 0);
+        desenha(arv, arv->root, 0);
         printf("\n");
     }
     /*
