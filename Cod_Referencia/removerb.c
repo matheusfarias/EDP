@@ -282,7 +282,79 @@ char _cor_char(tarv *arv, tnode * node){
 }
 
 void _remove_fix_up(tarv *arv, tnode *x){
-    /* VC DEVE IMPLEMENTAR ESTA PARTE*/
+    int seta_irmao;
+    int seta_sobrinho_vermelho;
+    tnode * irmao;
+    tnode * s_esq;
+    tnode * s_dir;
+    tnode * pai;
+    while(obtem_cor(arv,x) == PRETO && arv->raiz != x){
+        pai = x->pai;
+        irmao = (pai->esq == x)?pai->dir:pai->esq;
+        seta_irmao = (pai->esq == irmao)?DESQ:DDIR;
+
+        if (obtem_cor(arv,irmao)==VERMELHO){ /*caso 1: irmao vermelho*/
+         /*   printf("C1 (P,%d,%c) (I,%d,%c) (S1,%d,%c) (S2,%d,%c)\n",pai->reg,_cor_char(arv,pai),irmao->reg,_cor_char(arv,irmao),irmao->esq->reg,_cor_char(arv,irmao->esq->reg),irmao->dir->reg,_cor_char(arv,irmao->dir->reg));*/
+           printf("C1 (P,%d,%c)\n",pai->reg,_cor_char(arv,pai));
+
+            irmao->cor = PRETO;
+            pai->cor = VERMELHO;
+            if (seta_irmao == DDIR){
+                RE(obtem_pp(arv,pai));
+                irmao = x->pai->dir;
+            }else{
+                RD(obtem_pp(arv,pai));
+                irmao = x->pai->esq;
+            }
+        }
+        s_esq = irmao->esq;
+        s_dir = irmao->dir;
+        seta_sobrinho_vermelho = (obtem_cor(arv,s_esq)==VERMELHO)?DESQ:DDIR;
+
+        if ((obtem_cor(arv,s_esq)==PRETO)&&(obtem_cor(arv,s_dir)==PRETO)){ /*caso 2: irmao preto e sobrinhos pretos*/
+           printf("C2 (atual,%d,%c) (pai,%d,%c) (irmao,%d,%c)\n",x->reg,_cor_char(arv,x),pai->reg,_cor_char(arv,pai),irmao->reg,_cor_char(arv,irmao));
+
+            /*printf("C2 (P,%d,%c) (I,%d,%c) (S1,%d,%c) (S2,%d,%c)\n",pai->reg,_cor_char(arv,pai),irmao->reg,_cor_char(arv,irmao),irmao->esq->reg,_cor_char(arv,irmao->esq->reg),irmao->dir->reg,_cor_char(arv,irmao->dir->reg));*/
+            irmao->cor = VERMELHO;
+            x = pai;
+        }else{
+            /*caso 3: irmao preto e sobrinho vermelho forma cotovelo*/
+            if (seta_sobrinho_vermelho*seta_irmao < 0){
+
+                printf("C3 (atual,%d,%c) (pai,%d,%c) (irmao,%d,%c)\n",x->reg,_cor_char(arv,x),pai->reg,_cor_char(arv,pai),irmao->reg,_cor_char(arv,irmao));
+                if (seta_sobrinho_vermelho == DESQ){
+                    s_esq->cor = PRETO;
+                    irmao->cor = VERMELHO;
+                    RD(obtem_pp(arv,irmao));
+                }else{
+                    s_dir->cor = PRETO;
+                    irmao->cor = VERMELHO;
+                    RE(obtem_pp(arv,irmao));
+                }
+            }
+            /*caso 4*/
+
+            irmao = (pai->esq == x)?pai->dir:pai->esq;
+            s_esq = irmao->esq;
+            s_dir = irmao->dir;
+
+            printf("C4 (atual,%d,%c) (pai,%d,%c) (irmao,%d,%c)\n",x->reg,_cor_char(arv,x),pai->reg,_cor_char(arv,pai),irmao->reg,_cor_char(arv,irmao));
+            if (seta_irmao == DDIR){
+                irmao->cor = pai->cor;
+                pai->cor = PRETO;
+                s_dir->cor = PRETO;
+                RE(obtem_pp(arv,pai));
+            }else{
+                irmao->cor = pai->cor;
+                pai->cor = PRETO;
+                s_esq->cor = PRETO;
+                RD(obtem_pp(arv,pai));
+            }
+
+            break;
+        }
+    }
+    x->cor = PRETO;
 }
 
 int rb_remove(tarv *arv, treg reg){

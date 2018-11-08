@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-
 typedef struct regis {
     int id;
 }treg;
@@ -20,12 +18,8 @@ tnode* alocaNode (int id) {
     aux->reg.id = id;
     aux->esq = NULL;
     aux->dir = NULL;
-
-
     return aux;
-
 }
-
 
 void insertTree(tnode** pnode, int n) {
     if(*pnode == NULL) {
@@ -47,7 +41,6 @@ void preorder(tnode* pnode) {
 }
 
 int main() {
-
     tnode* tree = NULL;
     int n, x, i;
 
@@ -57,8 +50,7 @@ int main() {
         insertTree(&tree, n);
     }
 
-
     preorder(tree);
-    
+
     return 0;
 }

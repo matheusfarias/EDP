@@ -5,20 +5,16 @@ typedef struct regis {
     int id;
 }treg;
 
-
 typedef struct node {
     treg reg;
     struct node* esq;
     struct node* dir;
 }tnode;
 
-
 typedef struct cel_resp {
     int id;
     struct cel_resp* prox;
 }tresp;
-
-
 
 void insertResult(tresp** presp , int n) {
 
@@ -38,8 +34,6 @@ void insertResult(tresp** presp , int n) {
     }
 }
 
-
-
 tnode* alocaNode (int id) {
     tnode* aux;
     aux = (tnode*) malloc(sizeof(tnode));
@@ -47,9 +41,7 @@ tnode* alocaNode (int id) {
     aux->esq = NULL;
     aux->dir = NULL;
 
-
     return aux;
-
 }
 
 void insertTree(tnode** pnode, int n) {
@@ -62,7 +54,6 @@ void insertTree(tnode** pnode, int n) {
     }
 }
 
-
 void preorder(tnode* pnode) {
 	if(pnode != NULL)  {
 		printf("%d ",pnode->reg.id);
@@ -70,8 +61,6 @@ void preorder(tnode* pnode) {
 		preorder(pnode->dir);
 	}
 }
-
-
 
 tnode** busca(tnode** pnode, int n) {
 	tnode** ret;
@@ -88,8 +77,6 @@ tnode** busca(tnode** pnode, int n) {
 	return ret;
 }
 
-
-
 tnode** sucessor(tnode** pnode) {
 	tnode *aux;
 	tnode **paux;
@@ -100,12 +87,8 @@ tnode** sucessor(tnode** pnode) {
 		paux = &(aux->esq);
 		aux = aux->esq;
 	}
-
 	return paux;
-
-
 }
-
 
 void remove_raiz(tnode** pnode) {
 	tnode* aux;
@@ -130,8 +113,6 @@ void remove_raiz(tnode** pnode) {
 	}
 }
 
-
-
 void desenha_arv(tnode *pnode,int prof){
     int i;
     if (pnode != NULL){
@@ -142,7 +123,6 @@ void desenha_arv(tnode *pnode,int prof){
         desenha_arv(pnode->dir,prof+1);
     }
 }
-
 
 int remover(tnode** pnode, int n) {
 	int ret = 0;
@@ -156,22 +136,17 @@ int remover(tnode** pnode, int n) {
 	return ret;
 }
 
-
-
-
 void busca_impar(tnode* pnode, tresp** presp) {
 
 	if(pnode != NULL) {
-		if(pnode->reg.id % 2 != 0) {
+		if(pnode->reg.id % 2 != 0)
 			insertResult(presp, pnode->reg.id);
-		}
 		busca_impar(pnode->esq, presp);
 		busca_impar(pnode->dir, presp);
 	}
 }
 
 void remove_so_impar(tnode** pnode, tresp* presp) {
-
 	tresp* aux = presp;
 
 	while(aux != NULL) {
@@ -179,25 +154,17 @@ void remove_so_impar(tnode** pnode, tresp* presp) {
 		remover(pnode, aux->id);
 		aux = aux->prox;
 	}
-
 }
-
-
 
 void imprime(tresp* presp) {
     tresp* p;
-
     for(p = presp; p!= NULL; p = p->prox)
         printf("%d\n", p->id);
-
 }
 
 int main() {
-
-
 	tnode* tree = NULL;
     int n, x, i;
-
 
     tresp* resposta = NULL;
 
@@ -209,12 +176,9 @@ int main() {
 
    busca_impar(tree, &resposta);
 
-
    remove_so_impar(&tree, resposta);
-
 
    preorder(tree);
 
     return 0;
-
 }
