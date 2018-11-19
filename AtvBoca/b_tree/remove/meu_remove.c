@@ -19,7 +19,6 @@ typedef struct _arv {
 	int t;
 }tarv;
 
-//tnode* debugv
 /*FUNCOES:*/
 /* =-=-=-=-=-=-=-=-=-=-=-=-AUXILIARES=-=-=-=-=-=-=-=-=-=-=-*/
 int menor(int a, int b) {
@@ -293,12 +292,6 @@ int btree_insere(tarv* parv, tchave k) {
     return ret;
 }
 
-/*int _btree_remove(tarv* parv, tnode* x, tchave k) {
-	/* TODO 
-}
-*/
-
-
 int _btree_remove(tarv* parv, tnode* x, tchave k) {
     int ret;
     ret = 1;
@@ -357,17 +350,44 @@ int _btree_remove(tarv* parv, tnode* x, tchave k) {
     }
 }
 
-
 int btree_remove(tarv* parv, tchave k) {
 	return _btree_remove(parv, parv->raiz, k);
 }
 
+/* =-=-=-=-=-=-=-=-=-=-INSERE/REMOVE=-=-=-=-=-=-=-=-=-=-=-=*/
+void insere() {
+    tarv arv;
+    int t, i;
+    int k;
+    t = 2;
+
+    btree_constroi(&arv, t);
+
+    for(i = 10; i <= 200; i+= 10)
+        btree_insere(&arv, i);
+
+    imprime_arvore(arv.raiz);
+    i = 0;
+
+    //remove
+    do {
+        k = arv.raiz->chaves[0];
+        printf("=== remove %d ===\n", k);
+        btree_remove(&arv, k);
+        imprime_arvore(arv.raiz);
+        i++;
+    }while(i < 20);
+}
+
+/* =-=-=-=-=-=-=-=-=-=-=-=-MAIN=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*/
 int main() {
 	tarv arv;
 	int t, i;
 	t = 2;
 
-	printf("%d\n", t);
+    insere();
+
+	printf("OK", t); 
 
 	return 0;
 }

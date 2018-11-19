@@ -221,7 +221,7 @@ void print_node(tnode* x) {
 	printf("\n");
 }
 
-void insere_node(tarv* arv, int k) {
+void insere_node(tarv* arv, int k) { //MODIFICAR
 	int tt = arv->t;
 	tnode* r;
 	r = arv->raiz;
