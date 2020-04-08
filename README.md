@@ -3,9 +3,9 @@
 Arquivos da disciplina 'Estruturas de Dados e Programação'
 
 ## Data Structures
-* Red Black tree
+* Red-Black tree
 * Avl tree
-* B tree
+* B-tree
 * Simple Binary Search tree
   
 
