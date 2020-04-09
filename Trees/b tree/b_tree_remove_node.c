@@ -285,16 +285,65 @@ void pega_emprestado_irmao(tnode *x, int cpos,int irmao){
     }
 }
 
-int _btree_remove(tarv *parv, tnode * x, tchave k){
-    /*coloque seu codigo aqui!*/
-}
+int _btree_remove(tarv *parv, tnode * x, tchave k) {
+    int ik;
+    int t;
+    int i;
+    int iirmao_maior;
+    tnode *y,*z;
+    tchave klinha;
+    int ret;
+    ret = 1;
+    t = parv->t;
+    ik = procura_chave(x,k);
+    if (ik >=0 ) {
+        if (x->folha) {
+            remove_chave(x,ik);
+        }
+        else {
+            y = x->c[ik];
+            z = x->c[ik+1];
+            if (y->n >= t) {
+                klinha = antecessor(x,k);
+                x->chaves[ik] = klinha;
+                ret = _btree_remove(parv,y,klinha);
 
+            } else if (z->n >= t) {
+                klinha = sucessor(x,k);
+                x->chaves[ik] = klinha;
+                ret = _btree_remove(parv,z,klinha);
+            } else if ((y->n == t -1) && (z->n == t-1)) {
+                merge(parv,x,ik);
+                ret = _btree_remove(parv,x,k);
+            }
+        }
+    } else {
+        if (x->folha == TRUE){
+            ret = 0;
+        }else {
+            i = procura_ic(x,k);
+            if (x->c[i]->n == t-1) {
+                iirmao_maior = pega_irmao_maior(x,i);
+                if (x->c[iirmao_maior]->n >=t) {
+                    pega_emprestado_irmao(x,i,iirmao_maior);
+                   ret = _btree_remove(parv,x->c[i],k);
+                }else if (x->c[iirmao_maior]->n == t-1) {
+                    merge(parv,x,menor(i,iirmao_maior));
+                    ret = _btree_remove(parv,x,k);
+                }
+            }else{
+                ret = _btree_remove(parv,x->c[i],k);
+            }
+        }
+    }
+    return ret;
+}
+   
 int btree_remove(tarv *parv, tchave k){
     return _btree_remove(parv,parv->raiz,k);
 }
 
-
-int btree_split(tarv * parv,tnode * x, int i){
+int btree_split(tarv * parv,tnode * x, int i) {
     tnode * z;
     tnode * y;
     int t;
@@ -359,10 +408,6 @@ int btree_insere_naocheio(tarv *parv, tnode * x, tchave k){
     return ret;
 }
 
-
-
-
-
 int btree_insere(tarv *parv, tchave k){
     tnode * r;
     tnode * s;
@@ -395,8 +440,10 @@ void print_node(tnode *x){
     printf("\n");
 }
 
-
-
+/*
+*      <<<<<<<<<<<<<<TESTS>>>>>>>>>>>>>>>
+*
+*/
 
 void test_btree_split(){
 
@@ -644,9 +691,7 @@ void test_btree_insere(){
     assert(y->folha==FALSE);
 
     imprime_arvore(arv.raiz);
-
 }
-
 
 void test_btree_merge(){
 
@@ -907,7 +952,8 @@ void test_btree_empresta_irmao(){
 }
 
 
-void test_btree_empresta_irmao2(){
+void test_btree_empresta_irmao2() {
+
     tarv arv;
     tnode *x, *y, *z;
     int t; 
@@ -961,7 +1007,8 @@ void test_btree_empresta_irmao2(){
 
 }
 
-void test_btree_remove(){
+void test_btree_remove() {
+
     tarv arv;
     int t;
     tnode * x;
